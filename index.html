@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-MZ">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="WhatsApp Groups Hub Mz — encontre e divulgue grupos WhatsApp de Moçambique.">
+  <title>WhatsApp Groups Hub Mz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="bg-glow glow-one"></div><div class="bg-glow glow-two"></div>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="WhatsApp Groups Hub Mz">
+      <span class="brand-icon">⌕</span><span><strong>Groups Hub</strong><small>Moçambique</small></span>
+    </a>
+    <div class="header-actions">
+      <button class="ghost-btn" id="adminBtn">⚙ Admin</button>
+      <button class="primary-btn" id="publishBtn">＋ Publicar Grupo</button>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">🇲🇿 A comunidade dos grupos WhatsApp</span>
+        <h1>Encontre o grupo certo.<br><span>Entre e conecte-se.</span></h1>
+        <p>Descubra grupos WhatsApp de Moçambique e de várias categorias. Publique o seu grupo e alcance novas pessoas.</p>
+        <div class="search-wrap"><span>⌕</span><input id="search" type="search" placeholder="Pesquisar grupos..." autocomplete="off"></div>
+        <div class="quick-stats"><div><b id="groupCount">0</b><span>grupos</span></div><div><b>🇲🇿</b><span>Moçambique</span></div><div><b>24/7</b><span>acesso</span></div></div>
+      </div>
+      <div class="hero-card"><div class="orb">💬</div><div class="hero-card-title">WhatsApp Groups Hub</div><p>Grupos, pessoas e oportunidades num só lugar.</p><div class="mini-line"><span></span><span></span><span></span></div></div>
+    </section>
+
+    <section class="toolbar">
+      <div class="section-tabs" id="categoryTabs">
+        <button class="tab active" data-category="all">Todos</button>
+        <button class="tab" data-category="Moçambique">🇲🇿 Moçambique</button>
+        <button class="tab" data-category="Vendas/Negócios">💼 Negócios</button>
+        <button class="tab" data-category="Amizades">🤝 Amizades</button>
+        <button class="tab" data-category="Vagas de Emprego">💼 Emprego</button>
+        <button class="tab" data-category="Entretenimento">🎬 Entretenimento</button>
+        <button class="tab" data-category="Músicas">🎵 Músicas</button>
+      </div>
+    </section>
+
+    <section class="group-section" id="vipSection"><div class="section-heading"><div><span class="section-kicker">Destaques</span><h2>⭐ Grupos VIPs / Patrocinados</h2></div><span class="count-pill" id="vipCount">0</span></div><div class="group-grid" id="vipGrid"></div></section>
+    <section class="group-section"><div class="section-heading"><div><span class="section-kicker">Comunidade</span><h2>🇲🇿 Grupos de Moçambique</h2></div></div><div class="group-grid" id="mzGrid"></div></section>
+    <section class="group-section"><div class="section-heading"><div><span class="section-kicker">Descobrir</span><h2>🔥 Todos os Grupos / Recentes</h2></div></div><div class="group-grid" id="allGrid"></div><div class="empty" id="emptyState" hidden>Nenhum grupo encontrado. Tente outra pesquisa ou categoria.</div></section>
+  </main>
+
+  <footer><strong>WhatsApp Groups Hub Mz</strong><span>Conectando comunidades de Moçambique 🇲🇿</span></footer>
+
+  <div class="modal-backdrop" id="publishModal" hidden><div class="modal"><button class="close" data-close>×</button><span class="modal-kicker">NOVO GRUPO</span><h2>Publicar Grupo</h2><p class="modal-subtitle">Preencha os dados. O grupo ficará pendente para aprovação.</p><form id="publishForm"><label>Nome do grupo<input name="title" required placeholder="Ex.: Empregos em Maputo"></label><label>Link do WhatsApp<input name="link" type="url" required placeholder="https://chat.whatsapp.com/..."></label><div class="two-col"><label>Categoria<select name="category" required><option>Moçambique</option><option>Vendas/Negócios</option><option>Amizades</option><option>Vagas de Emprego</option><option>Entretenimento</option><option>Músicas</option><option>Outros</option></select></label><label>Imagem (URL)<input name="image" type="url" placeholder="https://..."></label></div><label class="upload-box">Ou escolher imagem do dispositivo<input name="file" type="file" accept="image/*"></label><label class="check"><input name="mozambique" type="checkbox"> É um grupo de Moçambique 🇲🇿</label><button class="primary-btn full" type="submit">Enviar para aprovação</button></form></div></div>
+
+  <div class="modal-backdrop" id="adminModal" hidden><div class="modal admin-modal"><button class="close" data-close>×</button><span class="modal-kicker">ÁREA RESTRITA</span><h2>Admin</h2><p class="modal-subtitle">Entre para gerir grupos e estatísticas.</p><form id="loginForm"><label>Palavra-passe<input id="adminPassword" type="password" required placeholder="••••••"></label><button class="primary-btn full">Entrar</button><p class="form-error" id="loginError"></p></form><div id="adminPanel" hidden></div></div></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
