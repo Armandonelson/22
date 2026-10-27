@@ -1,0 +1,28 @@
+const DEFAULT_GROUPS=[
+{id:1,title:'Empregos em Moçambique 🇲🇿',category:'Vagas de Emprego',moz:true,vip:true,clicks:1284,image:'https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=300&q=80',link:'https://chat.whatsapp.com/'},
+{id:2,title:'Negócios & Oportunidades MZ',category:'Vendas/Negócios',moz:true,vip:true,clicks:934,image:'https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=300&q=80',link:'https://chat.whatsapp.com/'},
+{id:3,title:'Amizades de Moçambique',category:'Amizades',moz:true,vip:false,clicks:721,image:'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=300&q=80',link:'https://chat.whatsapp.com/'},
+{id:4,title:'Músicas Moçambicanas',category:'Músicas',moz:true,vip:false,clicks:563,image:'https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=300&q=80',link:'https://chat.whatsapp.com/'},
+{id:5,title:'Entretenimento & Memes',category:'Entretenimento',moz:false,vip:false,clicks:410,image:'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=300&q=80',link:'https://chat.whatsapp.com/'},
+{id:6,title:'Compra e Venda MZ',category:'Vendas/Negócios',moz:true,vip:false,clicks:386,image:'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=300&q=80',link:'https://chat.whatsapp.com/'}
+];
+let groups=JSON.parse(localStorage.getItem('wgh_groups')||'null')||DEFAULT_GROUPS;
+let activeCategory='all';let searchTerm='';
+const $=s=>document.querySelector(s);
+function save(){localStorage.setItem('wgh_groups',JSON.stringify(groups));}
+function avatar(g){return g.image||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect width="100%" height="100%" fill="#12351f"/><circle cx="100" cy="82" r="42" fill="#25D366"/><path d="M45 175c15-48 95-48 110 0" fill="#25D366"/></svg>`)}
+function card(g){return `<article class="group-card"><div class="card-top"><img class="avatar" src="${avatar(g)}" alt="${escapeHtml(g.title)}"><div><h3 class="card-title">${escapeHtml(g.title)}</h3><div class="badges"><span class="badge">${escapeHtml(g.category)}</span>${g.moz?'<span class="badge mz">🇲🇿 MZ</span>':''}${g.vip?'<span class="badge vip">⭐ VIP</span>':''}</div></div></div><div class="card-meta"><span>↗ ${Number(g.clicks||0).toLocaleString('pt-MZ')} visitas</span><span>WhatsApp</span></div><button class="join-btn" data-id="${g.id}">◉ Entrar no Grupo</button></article>`}
+function escapeHtml(v){return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+function filtered(){return groups.filter(g=>(activeCategory==='all'||g.category===activeCategory||(activeCategory==='Moçambique'&&g.moz))&&(!searchTerm||g.title.toLowerCase().includes(searchTerm.toLowerCase())||g.category.toLowerCase().includes(searchTerm.toLowerCase())))}
+function render(){const list=filtered(),vip=list.filter(g=>g.vip),mz=list.filter(g=>g.moz);$('#vipGrid').innerHTML=vip.map(card).join('');$('#mzGrid').innerHTML=mz.map(card).join('');$('#allGrid').innerHTML=list.map(card).join('');$('#vipCount').textContent=vip.length;$('#groupCount').textContent=groups.length;$('#emptyState').hidden=list.length>0;document.querySelectorAll('.join-btn').forEach(b=>b.onclick=()=>join(Number(b.dataset.id)));}
+function join(id){const g=groups.find(x=>x.id===id);if(!g)return;g.clicks=(g.clicks||0)+1;save();render();window.open(g.link,'_blank','noopener,noreferrer');}
+function openModal(id){$(id).hidden=false;document.body.style.overflow='hidden'}
+function closeModal(el){const modal=el.closest('.modal-backdrop');modal.hidden=true;document.body.style.overflow=''}
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>closeModal(b));
+$('#publishBtn').onclick=()=>openModal('#publishModal');$('#adminBtn').onclick=()=>openModal('#adminModal');
+document.querySelectorAll('.modal-backdrop').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModal(e.target)}));
+$('#search').oninput=e=>{searchTerm=e.target.value;render()};
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');activeCategory=t.dataset.category;render()});
+$('#publishForm').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);let image=f.get('image')||'';const file=f.get('file');if(!image&&file&&file.size){image=await new Promise(resolve=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.readAsDataURL(file)})}groups.unshift({id:Date.now(),title:f.get('title'),link:f.get('link'),category:f.get('category'),moz:f.get('mozambique')==='on',vip:false,clicks:0,image});save();e.target.reset();closeModal(e.target);render();alert('Grupo enviado. Na versão com Supabase, ficará pendente para aprovação do administrador.');};
+$('#loginForm').onsubmit=e=>{e.preventDefault();const p=$('#adminPassword').value;const error=$('#loginError');if(p!=='849980'){error.textContent='Palavra-passe incorreta.';return}error.textContent='';$('#loginForm').hidden=true;$('#adminPanel').hidden=false;$('#adminPanel').innerHTML=`<div class="admin-stats"><div class="admin-stat"><b>${groups.length}</b><span>GRUPOS</span></div><div class="admin-stat"><b>${groups.filter(g=>g.vip).length}</b><span>VIP</span></div><div class="admin-stat"><b>${groups.reduce((a,g)=>a+Number(g.clicks||0),0).toLocaleString('pt-MZ')}</b><span>CLIQUES</span></div></div><p class="modal-subtitle">Painel demonstrativo. Aprovação, edição, ocultação e eliminação serão ligadas ao Supabase na próxima etapa.</p>`};
+render();
